@@ -1,0 +1,13 @@
+{
+    "name": "coopcycle/coopcycle-php-sdk",
+    "type": "library",
+    "license": "MIT",
+    "autoload" : {
+        "psr-4" : {
+            "CoopCycle\\": "src"
+        }
+    },
+    "require": {
+        "guzzlehttp/guzzle": "^7.0"
+    }
+}
