@@ -24,4 +24,20 @@ class Webhooks
 
         return json_decode((string) $response->getBody(), true);
     }
+
+    /**
+     * @var string $payload
+     * @var string $signature
+     * @var string $secret
+     *
+     * @return bool
+     */
+    public function verifySignature($payload, $signature, $secret)
+    {
+        // https://resthooks.org/docs/security/
+        // https://www.docusign.com/blog/developers/hmac-verification-php
+        $hexHash = hash_hmac('sha256', $payload, $secret);
+
+        return $signature === base64_encode(hex2bin($hexHash));
+    }
 }
