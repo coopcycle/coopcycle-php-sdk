@@ -1,0 +1,19 @@
+name: Test
+on: push
+jobs:
+  TEST:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          tools: composer:v2, phpstan
+      - name: Install PHP dependencies
+        run: composer install --prefer-dist --no-progress
+      - name: Run PHPStan
+        run: phpstan analyse
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit
