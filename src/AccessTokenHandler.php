@@ -8,6 +8,7 @@ use Psr\Http\Message\RequestInterface;
 class AccessTokenHandler
 {
     private $client;
+    private $accessToken;
 
     public function __construct(Client $client)
     {
@@ -29,22 +30,27 @@ class AccessTokenHandler
 
     private function getAccessToken()
     {
-        $base64Credentials = base64_encode(sprintf('%s:%s',
-            $this->client->getConfig('client_id'),
-            $this->client->getConfig('client_secret')));
+        if (null === $this->accessToken) {
 
-        $response = $this->client->post('/oauth2/token', [
-            'headers' => [
-                'Authorization' => sprintf('Basic %s', $base64Credentials)
-            ],
-            'form_params' => [
-                'grant_type' => 'client_credentials',
-                'scope' => 'tasks deliveries'
-            ]
-        ]);
+            $base64Credentials = base64_encode(sprintf('%s:%s',
+                $this->client->getConfig('client_id'),
+                $this->client->getConfig('client_secret')));
 
-        $data = json_decode((string) $response->getBody(), true);
+            $response = $this->client->post('/oauth2/token', [
+                'headers' => [
+                    'Authorization' => sprintf('Basic %s', $base64Credentials)
+                ],
+                'form_params' => [
+                    'grant_type' => 'client_credentials',
+                    'scope' => 'tasks deliveries'
+                ]
+            ]);
 
-        return $data['access_token'];
+            $data = json_decode((string) $response->getBody(), true);
+
+            $this->accessToken = $data['access_token'];
+        }
+
+        return $this->accessToken;
     }
 }
